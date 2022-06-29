@@ -16,9 +16,19 @@ import DashboardLayout from "../../components/layout/dashboardLayout";
 import DashboardHeader from "../../components/header/dashboardHeader";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useContext } from "react";
+import LoginContext from "../../contexts/loginContext";
 
 function Dashboard() {
   const router = useRouter();
+  const {loggedUser, setLoggedUser} = useContext(LoginContext);
+
+  useEffect(() => {
+    if (localStorage.getItem("loggedUser")) {
+      setLoggedUser(localStorage.getItem("loggedUser"))
+    }
+  })
 
   return (
     <DashboardLayout>
@@ -32,7 +42,7 @@ function Dashboard() {
         </Breadcrumb>
       </DashboardHeader>
       <main className="mt-10 flex flex-col items-center">
-        <h1 className="text-4xl font-bold">Halo Ditya Athallah..</h1>
+        <h1 className="text-4xl font-bold">Halo {loggedUser}</h1>
         <h2 className="text-2xl font-semibold">Selamat datang di dashboard</h2>
         <div className="relative w-[400px] h-[300px]">
           <Image
@@ -48,13 +58,6 @@ function Dashboard() {
             onClick={() => router.push("/dashboard/payment")}
           >
             Lihat pembayaran
-          </Button>
-          <Button
-            colorScheme="blackAlpha"
-            variant="outline"
-            onClick={() => router.push("/daftar")}
-          >
-            Buat akun
           </Button>
         </div>
       </main>

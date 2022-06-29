@@ -18,8 +18,10 @@ import {
   BsPersonSquare,
   BsNut,
 } from "react-icons/bs";
+import { useRouter } from "next/router";
 
 function DashboardLayout({ children }) {
+  const router = useRouter()
   return (
     <div className="flex">
       <div className="w-[20vw]">
@@ -30,7 +32,7 @@ function DashboardLayout({ children }) {
           >
             InTheKost
           </motion.h1>
-          <Button leftIcon={<BsColumnsGap />} w="full" colorScheme="gray">
+          <Button leftIcon={<BsColumnsGap />} w="full" colorScheme="gray" onClick={() => router.push("/dashboard")}>
             Dashboard
           </Button>
           <Accordion
@@ -58,6 +60,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
+                  onClick={() => router.push("/dashboard/payment/electricity")}
                 >
                   Electricity
                 </Button>
@@ -66,6 +69,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
+                  onClick={() => router.push("/dashboard/payment/water")}
                 >
                   Water
                 </Button>
@@ -74,6 +78,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
+                  onClick={() => router.push("/dashboard/payment/rent")}
                 >
                   Rent
                 </Button>
@@ -96,6 +101,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
+                  onClick={() => router.push("/dashboard/profile")}
                 >
                   Profile
                 </Button>
@@ -104,6 +110,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
+                  onClick={() => router.push("/dashboard/profile/setting")}
                 >
                   Setting
                 </Button>
