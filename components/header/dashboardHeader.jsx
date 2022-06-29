@@ -12,24 +12,22 @@ import { useContext, useEffect } from "react";
 import LoginContext from "../../contexts/loginContext";
 
 function DashboardHeader({ children, page }) {
-  const {login, setLogin, loggedUser, setLoggedUser} = useContext(LoginContext);
+  const { login, setLogin, loggedUser, setLoggedUser } =
+    useContext(LoginContext);
   const router = useRouter();
 
   //redirect to home if user not logged in and try to access dashboard from url
   useEffect(() => {
-    
-    if(localStorage.getItem("loggedUser")){
+    if (localStorage.getItem("loggedUser")) {
       setLogin(true);
       setLoggedUser(localStorage.getItem("loggedUser"));
-    }
-    else if(login === false) router.push('/');
-
+    } else if (login === false) router.push("/");
   }, []);
-  
+
   return (
     <>
       <Head>
-          <title>dashboard - InTheKost</title>
+        <title>dashboard - InTheKost</title>
       </Head>
       <header className="mt-[5vh] flex justify-between pr-10">
         <div>
@@ -65,8 +63,8 @@ function DashboardHeader({ children, page }) {
               onClick={() => {
                 // localStorage.removeItem("token");
                 setLogin(false);
-                setLoggedUser('');
-                localStorage.removeItem('loggedUser');
+                setLoggedUser("");
+                localStorage.removeItem("loggedUser");
                 router.push("/");
               }}
             >

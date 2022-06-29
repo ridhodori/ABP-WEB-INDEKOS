@@ -37,27 +37,27 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 //get all registered username on DB
-export async function getServerSideProps(){
+export async function getServerSideProps() {
   const usernames = await prisma.user.findMany({
-    select : {
-      username : true,
-    }
-  })
+    select: {
+      username: true,
+    },
+  });
   const emails = await prisma.user.findMany({
-    select : {
-      email : true,
-    }
-  })
+    select: {
+      email: true,
+    },
+  });
 
   return {
-    props : {
+    props: {
       usernames,
-      emails
-    }
-  }
+      emails,
+    },
+  };
 }
 
-const Daftar = ({usernames, emails}) => {
+const Daftar = ({ usernames, emails }) => {
   const [number, setNumber] = useState(0);
   const [pin, setPin] = useState("");
   const [data, setData] = useState({});
@@ -65,59 +65,57 @@ const Daftar = ({usernames, emails}) => {
   const toast = useToast();
 
   console.log(usernames);
-  
-  //convert usernames in DB from arrayOfObject to array so it can be used for .include function below
-  const usernameArr = usernames.map(user => user.username);
-  //convert emails in DB from arrayOfObject to array so it can be used for .include function below
-  const emailArr = emails.map(mail => mail.email);
 
-  function formStepTwo(val){
+  //convert usernames in DB from arrayOfObject to array so it can be used for .include function below
+  const usernameArr = usernames.map((user) => user.username);
+  //convert emails in DB from arrayOfObject to array so it can be used for .include function below
+  const emailArr = emails.map((mail) => mail.email);
+
+  function formStepTwo(val) {
     //check if email is already taken
-    if(emailArr.includes(val.email)){
+    if (emailArr.includes(val.email)) {
       toast({
-        title: 'email telah diambil',
+        title: "email telah diambil",
         status: "error",
         isClosable: true,
       });
     }
     //check if username is already taken
-    else if(usernameArr.includes(val.username)){
+    else if (usernameArr.includes(val.username)) {
       toast({
-        title: 'username telah diambil',
+        title: "username telah diambil",
         status: "error",
         isClosable: true,
       });
     }
     //check password and passwordConfirm similarity
-    else if(val.password !== val.passwordConfirm){
+    else if (val.password !== val.passwordConfirm) {
       toast({
-        title: 'password konfirmasi tidak sama',
+        title: "password konfirmasi tidak sama",
         status: "error",
         isClosable: true,
       });
-    }
-    else {
+    } else {
       setData(val);
       setNumber(number + 1);
     }
   }
-
   //pass user register data to register.js api
   async function saveUser(userInputData) {
-    const response = await fetch('/api/user/register', {
-      method : 'POST',
-      body : JSON.stringify(userInputData),
+    const response = await fetch("/api/user/register", {
+      method: "POST",
+      body: JSON.stringify(userInputData),
     });
-    
-    if(!response.ok) throw new Error(response.statusText);
+
+    if (!response.ok) throw new Error(response.statusText);
 
     toast({
-      title: 'user teregistrasi',
+      title: "user teregistrasi",
       status: "success",
       isClosable: true,
     });
 
-    Router.push('/');   //redirect page to home after registered
+    Router.push("/"); //redirect page to home after registered
 
     return await response.json();
   }
@@ -147,7 +145,7 @@ const Daftar = ({usernames, emails}) => {
             Daftar untuk Kosan
           </motion.h2>
         </div>
-        <div className="flex items-center flex-col w-full gap-20 mb-40 h-96">
+        <div className="flex items-center flex-col w-full gap-20 mb-60 h-96">
           {number === 0 ? "" : <BreadCum number={number} />}
           {number == 0 ? (
             <motion.div
@@ -166,8 +164,8 @@ const Daftar = ({usernames, emails}) => {
               </h3>
               <p className="w-96 text-center">
                 Kode konfirmasi akan diberikan oleh pemilik kosan setelah
-                pendaftaran telah disetujui. Chat melalui WA untuk informasi lebih
-                lanjut.
+                pendaftaran telah disetujui. Chat melalui WA untuk informasi
+                lebih lanjut.
               </p>
               <span className="flex justify-center gap-2">
                 <PinInput
@@ -226,10 +224,11 @@ const Daftar = ({usernames, emails}) => {
                   nama: "",
                   kelamin: "",
                   nomorHp: "",
+                  alamat: "",
                   fotoKtp: null,
                   fotoKk: null,
                 }}
-                onSubmit={(val) => formStepTwo(val) }
+                onSubmit={(val) => formStepTwo(val)}
               >
                 <Form className="flex flex-col gap-5">
                   <span>
@@ -242,16 +241,30 @@ const Daftar = ({usernames, emails}) => {
                   </span>
                   <span>
                     <label>Password</label>
-                    <Field as={Input} name="password" type="password" required />
+                    <Field
+                      as={Input}
+                      name="password"
+                      type="password"
+                      required
+                    />
                   </span>
                   <span>
                     <label>Konfirmasi Password</label>
-                    <Field as={Input} name="passwordConfirm" type="password" required />
+                    <Field
+                      as={Input}
+                      name="passwordConfirm"
+                      type="password"
+                      required
+                    />
                   </span>
                   <div className="flex justify-center gap-5 mt-5">
                     <Popover>
                       <PopoverTrigger>
-                        <Button colorScheme="gray" variant="outline" type="button">
+                        <Button
+                          colorScheme="gray"
+                          variant="outline"
+                          type="button"
+                        >
                           Kembali
                         </Button>
                       </PopoverTrigger>
@@ -260,8 +273,8 @@ const Daftar = ({usernames, emails}) => {
                         <PopoverCloseButton />
                         <PopoverHeader>Konfirmasi!</PopoverHeader>
                         <PopoverBody>
-                          Data yang sudah ditulis mungkin akan hilang, apakah anda
-                          yakin?
+                          Data yang sudah ditulis mungkin akan hilang, apakah
+                          anda yakin?
                         </PopoverBody>
                         <PopoverFooter>
                           <Button
@@ -325,6 +338,10 @@ const Daftar = ({usernames, emails}) => {
                     <label>Nomor Hp</label>
                     <Field as={Input} name="nomorHp" type="text" required />
                   </span>
+                  <span>
+                    <label>Alamat</label>
+                    <Field as={Input} name="alamat" type="text" required />
+                  </span>
                   <div className="flex justify-center gap-5 mt-5">
                     <Popover>
                       <PopoverTrigger>
@@ -341,8 +358,8 @@ const Daftar = ({usernames, emails}) => {
                         <PopoverCloseButton />
                         <PopoverHeader>Konfirmasi!</PopoverHeader>
                         <PopoverBody>
-                          Data yang sudah ditulis mungkin akan hilang, apakah anda
-                          yakin?
+                          Data yang sudah ditulis mungkin akan hilang, apakah
+                          anda yakin?
                         </PopoverBody>
                         <PopoverFooter>
                           <Button
@@ -410,8 +427,8 @@ const Daftar = ({usernames, emails}) => {
                         <PopoverCloseButton />
                         <PopoverHeader>Konfirmasi!</PopoverHeader>
                         <PopoverBody>
-                          Data yang sudah ditulis mungkin akan hilang, apakah anda
-                          yakin?
+                          Data yang sudah ditulis mungkin akan hilang, apakah
+                          anda yakin?
                         </PopoverBody>
                         <PopoverFooter>
                           <Button
@@ -463,6 +480,10 @@ const Daftar = ({usernames, emails}) => {
                     <Tr>
                       <Td>Jenis Kelamin</Td>
                       <Td>{data.kelamin}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Alamat</Td>
+                      <Td>{data.alamat}</Td>
                     </Tr>
                   </Tbody>
                 </Table>
@@ -525,7 +546,7 @@ const Daftar = ({usernames, emails}) => {
                 </Popover>
                 <Button
                   colorScheme="gray"
-                  onClick={async () => await saveUser(data)}    //run function to pass user register data in line 33
+                  onClick={async () => await saveUser(data)} //run function to pass user register data in line 33
                 >
                   Data Benar
                 </Button>
