@@ -29,6 +29,8 @@ import {
   TableCaption,
   TableContainer,
   toast,
+  InputGroup,
+  InputLeftAddon,
 } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
 import Router from "next/router";
@@ -36,7 +38,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-//get all registered username on DB
+//get all registered username on DB for validation
 export async function getServerSideProps() {
   const usernames = await prisma.user.findMany({
     select: {
@@ -63,8 +65,6 @@ const Daftar = ({ usernames, emails }) => {
   const [data, setData] = useState({});
 
   const toast = useToast();
-
-  console.log(usernames);
 
   //convert usernames in DB from arrayOfObject to array so it can be used for .include function below
   const usernameArr = usernames.map((user) => user.username);
@@ -95,11 +95,14 @@ const Daftar = ({ usernames, emails }) => {
         status: "error",
         isClosable: true,
       });
-    } else {
+    }
+    //continue to form step three
+    else {
       setData(val);
       setNumber(number + 1);
     }
   }
+
   //pass user register data to register.js api
   async function saveUser(userInputData) {
     const response = await fetch("/api/user/register", {
@@ -145,7 +148,7 @@ const Daftar = ({ usernames, emails }) => {
             Daftar untuk Kosan
           </motion.h2>
         </div>
-        <div className="flex items-center flex-col w-full gap-20 mb-60 h-96">
+        <div className="flex items-center flex-col w-full gap-20 mb-40 min-h-96">
           {number === 0 ? "" : <BreadCum number={number} />}
           {number == 0 ? (
             <motion.div
@@ -223,8 +226,7 @@ const Daftar = ({ usernames, emails }) => {
                   passwordConfirm: "",
                   nama: "",
                   kelamin: "",
-                  nomorHp: "",
-                  alamat: "",
+                  phone_num: "",
                   fotoKtp: null,
                   fotoKk: null,
                 }}
@@ -336,11 +338,14 @@ const Daftar = ({ usernames, emails }) => {
                   </span>
                   <span>
                     <label>Nomor Hp</label>
-                    <Field as={Input} name="nomorHp" type="text" required />
+                    <InputGroup>
+                      <InputLeftAddon>+62</InputLeftAddon>
+                      <Field as={Input} name="phone_num" type="text" required />
+                    </InputGroup>
                   </span>
                   <span>
                     <label>Alamat</label>
-                    <Field as={Input} name="alamat" type="text" required />
+                    <Field as={Input} name="address" type="text" required />
                   </span>
                   <div className="flex justify-center gap-5 mt-5">
                     <Popover>
@@ -475,15 +480,15 @@ const Daftar = ({ usernames, emails }) => {
                     </Tr>
                     <Tr>
                       <Td>Nomor Handphone</Td>
-                      <Td>{data.nomorHp}</Td>
+                      <Td>{data.phone_num}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Alamat</Td>
+                      <Td>{data.address}</Td>
                     </Tr>
                     <Tr>
                       <Td>Jenis Kelamin</Td>
                       <Td>{data.kelamin}</Td>
-                    </Tr>
-                    <Tr>
-                      <Td>Alamat</Td>
-                      <Td>{data.alamat}</Td>
                     </Tr>
                   </Tbody>
                 </Table>

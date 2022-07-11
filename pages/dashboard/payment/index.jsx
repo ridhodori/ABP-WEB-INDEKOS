@@ -15,12 +15,118 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import { useState, useEffect, useContext } from "react";
+import LoginContext from "../../../contexts/loginContext";
+import { PrismaClient } from "@prisma/client";
 import DashboardHeader from "../../../components/header/dashboardHeader";
 import DashboardLayout from "../../../components/layout/dashboardLayout";
 
-function Payment() {
+const prisma = new PrismaClient();
+
+export async function getServerSideProps() {
+  const users = await prisma.user.findMany();
+  const electricities = await prisma.electricity.findMany();
+  const waters = await prisma.water.findMany();
+  const rents = await prisma.rent.findMany();
+  
+  return {
+    props: {
+      users,
+      electricities,
+      waters,
+      rents
+    }
+  }
+}
+
+function Payment({users, electricities, waters, rents}) {
   const router = useRouter();
+
+  const {login, setLogin, loggedUser, setLoggedUser, setProfile} = useContext(LoginContext);
+  let usernames, currentUser;
+  let payments, electricity, water,  rent;
+  const [totalElectricity, setTotalElectricity] = useState(0);
+  const [totalWater, setTotalWater] = useState(0);
+  const [totalRent, setTotalRent] = useState(0);
+
+  const [payedElectricity, setPayedElectricity] = useState(0);
+  const [payedWater, setPayedWater] = useState(0);
+  const [payedRent, setPayedRent] = useState(0);
+
+  const [electricLunas, setElectricLunas] = useState(false);
+  const [waterLunas, setWaterLunas] = useState(false);
+  const [rentLunas, setRentLunas] = useState(false);
+
+  function getPayment(id){
+    fetch('/api/payment')
+      .then(res => res.json())
+      .then(paymentFromDB => {
+        payments = paymentFromDB.filter(pay => pay.user_id === id);
+      })
+      .then(()=>{
+        const paymentsId = payments.map(py => py.id);
+        
+        electricity = electricities.filter(el => paymentsId.indexOf(el.payment_id) !== -1);
+        water = waters.filter(wt => paymentsId.indexOf(wt.payment_id) !== -1);
+        rent = rents.filter(rt => paymentsId.indexOf(rt.payment_id) !== -1);
+
+        const getTotalElectricity = electricity.map(el => el.electric_price).reduce((total, el) =>  total + el );
+        const getTotalWater = water.map(wt => wt.water_price).reduce((total, wt) =>  total + wt );
+        const getTotalRent = rent.map(rt => rt.rent_prices).reduce((total, rt) =>  total + rt );
+
+        const getPayedElectricity = electricity.map(el => el.electricity_payed).reduce((total, el) =>  total + el )
+        const getPayedWater = water.map(wt => wt.water_payed).reduce((total, wt) =>  total + wt )
+        const getPayedRent = rent.map(rt => rt.rent_payed).reduce((total, rt) =>  total + rt )
+
+        setTotalElectricity(getTotalElectricity);
+        setTotalWater(getTotalWater);
+        setTotalRent(getTotalRent);
+
+        setPayedElectricity(getPayedElectricity);
+        setPayedWater(getPayedWater);
+        setPayedRent(getPayedRent);
+
+        if (getTotalElectricity === getPayedElectricity) setElectricLunas(true);
+        if (getTotalWater === getPayedWater) setWaterLunas(true);
+        if (getTotalRent === getPayedRent) setRentLunas(true);
+      })
+      .catch(()=>{
+        //jika gk ada data di db
+        setTotalElectricity(0);
+        setTotalWater(0);
+        setTotalRent(0);
+
+        setPayedElectricity(0);
+        setPayedWater(0);
+        setPayedRent(0);
+      });
+  }
+
+  useEffect(() => {
+    if(loggedUser){
+      usernames = users.map(user => user.username);
+      currentUser = users.find(user => user.username === loggedUser);
+
+      setProfile(currentUser);
+      getPayment(currentUser.id);
+    }
+    else if(localStorage.getItem("loggedUser")){
+      usernames = users.map(user => user.username);
+      if (usernames.includes(localStorage.getItem("loggedUser"))){
+        setLogin(true);
+
+        const getLocalStorageUser = localStorage.getItem("loggedUser");
+        setLoggedUser(getLocalStorageUser);
+        currentUser = users.find(user => user.username === getLocalStorageUser);
+
+        setProfile(currentUser);
+        getPayment(currentUser.id);
+      }
+      else router.push('/');
+    }
+    else if(login === false) router.push('/');
+  }, []);
+  
 
   return (
     <DashboardLayout>
@@ -55,9 +161,9 @@ function Payment() {
             <Tbody>
               <Tr>
                 <Td>Listrik (Electricity)</Td>
-                <Td color="green">Lunas</Td>
-                <Td isNumeric>Rp.200.000</Td>
-                <Td isNumeric>Rp.200.000</Td>
+                <Td color={electricLunas ? "green" : "red"}>{electricLunas ? "Lunas" : "Belum lunas"}</Td>
+                <Td isNumeric>Rp.{totalElectricity}</Td>
+                <Td isNumeric>Rp.{payedElectricity}</Td>
                 <Td>
                   <Button
                     size="sm"
@@ -71,9 +177,9 @@ function Payment() {
               </Tr>
               <Tr>
                 <Td>Air (Water)</Td>
-                <Td color="red">Belum lunas</Td>
-                <Td isNumeric>Rp.150.000</Td>
-                <Td isNumeric>Rp.100.000</Td>
+                <Td color={waterLunas ? "green" : "red"}>{waterLunas ? "Lunas" : "Belum lunas"}</Td>
+                <Td isNumeric>Rp.{totalWater}</Td>
+                <Td isNumeric>Rp.{payedWater}</Td>
                 <Td>
                   <Button
                     size="sm"
@@ -85,9 +191,9 @@ function Payment() {
               </Tr>
               <Tr>
                 <Td>Sewa (Rent)</Td>
-                <Td color="green">Lunas</Td>
-                <Td isNumeric>Rp.800.000</Td>
-                <Td isNumeric>Rp.800.000</Td>
+                <Td color={rentLunas ? "green" : "red"}>{rentLunas ? "Lunas" : "Belum lunas"}</Td>
+                <Td isNumeric>Rp.{totalRent}</Td>
+                <Td isNumeric>Rp.{payedRent}</Td>
                 <Td>
                   <Button
                     size="sm"

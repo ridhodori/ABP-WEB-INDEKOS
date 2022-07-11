@@ -51,9 +51,9 @@ model User {
   password        String?
   name            String?
   email           String?  @unique
-  address         String?  
-  phonenum        String?     
   image           String?
+  phone_num       String?
+  address         String?
   emailVerified   DateTime?
   user_status     Int
   accounts        Account[]
@@ -67,6 +67,7 @@ model Registration{
   user            User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id         String  
   gender          String    
+  phonenum        Int     @unique
   nik             Int     @unique
   confirm         Int
 }
@@ -75,11 +76,9 @@ model Payment{
   id             String  @id @default(cuid())
   user           User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id        String
-  status         Int
-  month          String
-  rent           Rent?
-  water          Water?
-  electricity    Electricity?
+  rent           Rent[]
+  water          Water[]
+  electricity    Electricity[]
 }
 
 model Rent{
@@ -87,8 +86,9 @@ model Rent{
   payment         Payment? @relation(fields: [payment_id], references: [id])  
   payment_id      String?
   payment_status  Int
-  rent_periode    Int
+  rent_periode    String
   rent_prices     Int
+  rent_payed      Int
 }
 
 model Water{
@@ -96,13 +96,17 @@ model Water{
   payment         Payment? @relation(fields: [payment_id], references: [id])  
   payment_id      String?
   payment_status  Int
+  water_periode   String
   water_price     Int
+  water_payed     Int
 }
 
 model Electricity{
   id              String  @id @default(cuid())
   payment         Payment? @relation(fields: [payment_id], references: [id])  
   payment_id      String?
+  electricity_periode String
   payment_status  Int
   electric_price  Int
+  electricity_payed Int
 }

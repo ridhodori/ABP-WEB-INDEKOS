@@ -21,7 +21,8 @@ import {
 import { useRouter } from "next/router";
 
 function DashboardLayout({ children }) {
-  const router = useRouter()
+  const router = useRouter();
+
   return (
     <div className="flex">
       <div className="w-[20vw]">
@@ -32,7 +33,7 @@ function DashboardLayout({ children }) {
           >
             InTheKost
           </motion.h1>
-          <Button leftIcon={<BsColumnsGap />} w="full" colorScheme="gray" onClick={() => router.push("/dashboard")}>
+          <Button leftIcon={<BsColumnsGap />} w="full" colorScheme="gray" onClick={()=> router.push("/dashboard")}>
             Dashboard
           </Button>
           <Accordion
@@ -56,11 +57,20 @@ function DashboardLayout({ children }) {
               </AccordionButton>
               <AccordionPanel display="flex" flexDirection="column" gap="2">
                 <Button
+                  leftIcon={<BsWallet2 />}
+                  w="full"
+                  variant="outline"
+                  colorScheme="gray"
+                  onClick={()=> router.push("/dashboard/payment")}
+                >
+                  payment
+                </Button>
+                <Button
                   leftIcon={<BsFillLightningChargeFill />}
                   w="full"
                   variant="outline"
                   colorScheme="gray"
-                  onClick={() => router.push("/dashboard/payment/electricity")}
+                  onClick={()=> router.push("/dashboard/payment/electricity")}
                 >
                   Electricity
                 </Button>
@@ -69,7 +79,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
-                  onClick={() => router.push("/dashboard/payment/water")}
+                  onClick={()=> router.push("/dashboard/payment/water")}
                 >
                   Water
                 </Button>
@@ -78,7 +88,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
-                  onClick={() => router.push("/dashboard/payment/rent")}
+                  onClick={()=> router.push("/dashboard/payment/rent")}
                 >
                   Rent
                 </Button>
@@ -101,7 +111,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
-                  onClick={() => router.push("/dashboard/profile")}
+                  onClick={()=> router.push("/dashboard/profile")}
                 >
                   Profile
                 </Button>
@@ -110,7 +120,7 @@ function DashboardLayout({ children }) {
                   w="full"
                   variant="outline"
                   colorScheme="gray"
-                  onClick={() => router.push("/dashboard/profile/setting")}
+                  onClick={()=> router.push("/dashboard/profile/setting")}
                 >
                   Setting
                 </Button>

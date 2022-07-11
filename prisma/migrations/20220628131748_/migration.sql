@@ -47,8 +47,6 @@ CREATE TABLE `User` (
     `password` VARCHAR(191) NULL,
     `name` VARCHAR(191) NULL,
     `email` VARCHAR(191) NULL,
-    `address` VARCHAR(191) NULL,
-    `phonenum` VARCHAR(191) NULL,
     `image` VARCHAR(191) NULL,
     `emailVerified` DATETIME(3) NULL,
     `user_status` INTEGER NOT NULL,
@@ -63,9 +61,11 @@ CREATE TABLE `Registration` (
     `id` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
     `gender` VARCHAR(191) NOT NULL,
+    `phonenum` INTEGER NOT NULL,
     `nik` INTEGER NOT NULL,
     `confirm` INTEGER NOT NULL,
 
+    UNIQUE INDEX `Registration_phonenum_key`(`phonenum`),
     UNIQUE INDEX `Registration_nik_key`(`nik`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -74,8 +74,6 @@ CREATE TABLE `Registration` (
 CREATE TABLE `Payment` (
     `id` VARCHAR(191) NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
-    `status` INTEGER NOT NULL,
-    `month` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

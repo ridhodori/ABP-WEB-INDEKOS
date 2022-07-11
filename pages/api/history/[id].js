@@ -9,22 +9,22 @@ export default async function handler(res, req){
             where: {
               id : id,
             }
-            });
+          });
           const electricity = await prisma.electricity.findMany({
           where: {
             id : id,
-          }
+            }
           });
           const rent = await prisma.rent.findMany({
             where: {
               id : id,
             }
-            });
-            const water = await prisma.water.findMany({
-              where: {
-                id : id,
-              }
-              });
+          });
+          const water = await prisma.water.findMany({
+            where: {
+              id : id,
+            }
+          });
           res.send({payment,electricity,rent,water});
           break;
         }

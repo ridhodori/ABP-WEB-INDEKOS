@@ -22,9 +22,9 @@ export default async function handler(req, res) {
             password: data.password,
             name: data.nama,
             email: data.email,
+            phone_num: data.phone_num,
+            address: data.address,
             user_status: 1, //gak tau ini diisi apa. tapi karena required, jadi isi sembarang aja dulu
-            address: data.alamat,
-            phonenum: data.nomorHp,
           },
         });
 

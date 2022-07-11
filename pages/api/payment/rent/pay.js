@@ -1,22 +1,17 @@
 import { prisma } from "../../../../client/prisma";
 
-
-
-export default async function handler(
-    req,
-    res
-){
+export default async function handler(req,res){
   switch (req.method) {
-    case "PUT": {
-        const id = req.query.id;
-        const data= req.body;
+    case "POST": {
+        const data = JSON.parse(req.body);
         try {
           const rent = await prisma.rent.update({
             where: {
-              id: id,
+              id: data.id,
             },
             data: {
-              ...data,
+                rent_payed : data.rent_payed,
+                payment_status : data.payment_status
             },
           });
           res.json(rent);

@@ -57,7 +57,7 @@ export default class FirstSlider extends Component {
             }}
             className="text-6xl font-bold"
           >
-            Manage Tagihan Kost Kamu ?
+            Urusan tagihan kost? ingat Inthekost
           </motion.h2>
           <div className="flex gap-5 mt-10">
             <Button

@@ -1,11 +1,7 @@
 import { prisma } from "../../../../client/prisma";
 import bcrypt from "bcrypt";
 
-
-export default async function handler(
-    req,
-    res
-){
+export default async function handler(req, res){
   switch (req.method) {
     case "GET":
       //showpaymentwater

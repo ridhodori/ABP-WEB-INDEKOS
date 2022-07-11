@@ -79,15 +79,13 @@ const About = () => {
           }}
           className="text-7xl font-light text-[#BDBDBD]"
         >
-          Tentang
+          About
         </motion.h2>
         <p className="font-light leading-loose mt-5">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry&#39;s standard dummy text
-          ever since the 1500s, when an unknown printer took a galley of type
-          and scrambled it to make a type specimen book. It has survived not
-          only five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged.
+          Indekos is an web base application that is used to manage bills that
+          must be paid by the user to the owner of the boarding house. With this
+          web-based application, users can ensure that payments are recorded and
+          can be shown as proof of payment
         </p>
       </article>
     </motion.div>

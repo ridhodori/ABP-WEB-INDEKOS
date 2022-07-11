@@ -1,24 +1,23 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
-import { prisma } from "../../../../../client/prisma";
+import { prisma } from "../../../../client/prisma";
 
 export default async function handler(req, res) {
   switch (req.method) {
-    case "PUT": {
-      const id = req.query.id;
-      const data = req.body;
+    case "POST": {
+      const data = JSON.parse(req.body);
+      
       try {
         const electricity = await prisma.electricity.update({
           where: {
-            id: id,
+            id: data.id,
           },
           data: {
-            ...data,
+            electricity_payed : data.electricity_payed,
+            payment_status : data.payment_status
           },
         });
         res.json(electricity);
       } catch (error) {
-        errorHandler(error, req, res);
+        console.log(error);
       }
       break;
     }
